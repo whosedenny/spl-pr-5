@@ -1,4 +1,13 @@
-const electronics: Electronics[] = [
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+var electronics = [
     {
         id: 1,
         name: "IPhone 16 pro max",
@@ -24,8 +33,7 @@ const electronics: Electronics[] = [
         electricityConsumption: "65W",
     },
 ];
-
-const clothing: Clothing[] = [
+var clothing = [
     {
         id: 3,
         name: "Футболка",
@@ -51,77 +59,40 @@ const clothing: Clothing[] = [
         gender: "M",
     },
 ];
-
-//Базовий тип товару
-type BaseProduct = {
-    id: number;
-    name: string;
-    price: number;
-    count: number;
-    color: string;
-    description: string;
-    type: string;
-};
-
-//Тип для товарів електроніки
-type Electronics = BaseProduct & {
-    category: "electronics";
-    warrantyPeriod: string;
-    electricityConsumption: string;
-};
-
-//Тип для товарів одягу
-type Clothing = BaseProduct & {
-    category: "clothing";
-    size: "XS" | "S" | "M" | "L" | "XL" | "XXL";
-    gender: "M" | "W" | "M&W";
-};
-
-//Тип для кошику
-type CartItem<T> = {
-    product: T;
-    quantity: number;
-};
-
 // Метод пошуку товару за його Id
-const findProduct = <T extends BaseProduct>( products: T[], id: number): T | undefined => {
-    return products.find((product) => product.id === id);
+var findProduct = function (products, id) {
+    return products.find(function (product) { return product.id === id; });
 };
-
 //Метод фільтрації товарів за мінімальною та максимальною ціною
-const filterByPrice = <T extends BaseProduct>(products: T[], maxPrice: number, minPrice: number = 0): T[] => {
-    return products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+var filterByPrice = function (products, maxPrice, minPrice) {
+    if (minPrice === void 0) { minPrice = 0; }
+    return products.filter(function (product) { return product.price >= minPrice && product.price <= maxPrice; });
 };
-
 //Метод додавання товару до кошику
-const addToCart = <T extends BaseProduct>(cart: CartItem<T>[], product: T, quantity: number): CartItem<T>[] => {
-    const cartItem = cart.find((item) => item.product.id === product.id);
-
+var addToCart = function (cart, product, quantity) {
+    var cartItem = cart.find(function (item) { return item.product.id === product.id; });
     if (cartItem) {
         cartItem.quantity += quantity;
-    } else {
-        cart.push({ product, quantity });
     }
-
+    else {
+        cart.push({ product: product, quantity: quantity });
+    }
     return cart;
 };
-
 // Метод підрахунку загальної ціни товарів у кошику
-const calculateTotal = <T extends BaseProduct>(cart: CartItem<T>[]): number => {
-    let res: number = 0;
-
-    for (const item of cart) {
+var calculateTotal = function (cart) {
+    var res = 0;
+    for (var _i = 0, cart_1 = cart; _i < cart_1.length; _i++) {
+        var item = cart_1[_i];
         res += item.product.price * item.quantity;
     }
-
     return res;
 };
-
-const phone = findProduct(electronics, 1);
+var phone = findProduct(electronics, 1);
 console.log("Пошук товару за Id:", phone);
-const filteredProducts = filterByPrice([...electronics, ...clothing], 1000, 100000);
+var filteredProducts = filterByPrice(__spreadArray(__spreadArray([], electronics, true), clothing, true), 1000, 100000);
 console.log("Відфільтровані за ціною товари: :", filteredProducts);
-let cart: CartItem<BaseProduct>[] = addToCart([], phone!, 1);
+var cart = addToCart([], phone, 1);
 console.log("Оновлена корзина після додавання:", cart);
-const totalCost = calculateTotal(cart);
+var totalCost = calculateTotal(cart);
 console.log("Загальна ціна:", totalCost);
