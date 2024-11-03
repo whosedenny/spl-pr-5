@@ -84,26 +84,43 @@ type CartItem<T> = {
 };
 
 // Метод пошуку товару за його Id
-const findProduct = <T extends BaseProduct>( products: T[], id: number): T | undefined => {
-    return products.find((product) => product.id === id);
+const findProduct = <T extends BaseProduct>(products: T[], id: number): T | undefined => {
+    for (const product of products) {
+        if (product.id === id) {
+            return product;
+        }
+    }
+    return undefined;
 };
 
 //Метод фільтрації товарів за мінімальною та максимальною ціною
-const filterByPrice = <T extends BaseProduct>(products: T[], maxPrice: number, minPrice: number = 0): T[] => {
-    return products.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+const filterByPrice = <T extends BaseProduct>( products: T[], maxPrice: number, minPrice: number = 0): T[] => {
+    const filteredProducts: T[] = [];
+    for (const product of products) {
+        if (product.price >= minPrice && product.price <= maxPrice) {
+            filteredProducts.push(product);
+        }
+    }
+    return filteredProducts;
 };
 
 //Метод додавання товару до кошику
 const addToCart = <T extends BaseProduct>(cart: CartItem<T>[], product: T, quantity: number): CartItem<T>[] => {
-    const cartItem = cart.find((item) => item.product.id === product.id);
+    let itemFound = false;
 
-    if (cartItem) {
-        cartItem.quantity += quantity;
-    } else {
+    for (const item of cart) {
+        if (item.product.id === product.id) {
+            item.quantity += quantity; 
+            itemFound = true; 
+            break; 
+        }
+    }
+
+    if (!itemFound) {
         cart.push({ product, quantity });
     }
 
-    return cart;
+    return cart; 
 };
 
 // Метод підрахунку загальної ціни товарів у кошику
